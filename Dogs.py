@@ -6,7 +6,7 @@ from fastai.metrics import error_rate
 from PIL import ImageTk, Image
 
 bs = 64
-path = "/Users/Sai/Desktop/ML/Model"
+path = "./Model"
 learn = load_learner(path, 'resnet152transform.pkl')
 
 class Redir(object):
@@ -52,7 +52,7 @@ if __name__ == '__main__':
     # this puts the button at the top in the middle
     button.grid(row=1, column=1,pady=4,padx=100)
 
-    img1 = ImageTk.PhotoImage(Image.open("/Users/Sai/Desktop/ML/Model/a.jpg").resize((800,600)))
+    img1 = ImageTk.PhotoImage(Image.open("./Model/a.jpg").resize((800,600)))
     label1 = Label(root, image = img1 )
     label1.grid(row=2,column=1)
 

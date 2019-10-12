@@ -3,10 +3,11 @@ import tkinter.filedialog
 from fastai.vision import *
 import torch
 from fastai.metrics import error_rate
+from PIL import ImageTk, Image
 
 bs = 64
-path = "./Model"
-learn = load_learner(path, 'resnet50_model.pkl')
+path = "./"
+learn = load_learner(path, 'resnet152transform.pkl')
 
 class Redir(object):
     # This is what we're using for the redirect, it needs a text box
@@ -29,8 +30,12 @@ def askopenfilename():
         # Will print the file name to the text box
         path1 = filename
         mia1 = open_image(filename)
+        img = ImageTk.PhotoImage(Image.open(filename).resize((800,600)))
         pred = learn.predict(mia1)
-        print(pred[0])
+
+        label1.configure(image = img)
+        label1.img1 = img
+        label["text"] = "The selected image is of a " + str(pred[0])
 
 
 if __name__ == '__main__':
@@ -43,34 +48,15 @@ if __name__ == '__main__':
     # The method the button executes is the askopenfilename from above
     # You don't use askopenfilename() because you only want to bind the button
     # to the function, then the button calls the function.
-    button = Button(root, text='GetFileName', command=askopenfilename)
+    button = Button(root, text='Select an image', command=askopenfilename)
     # this puts the button at the top in the middle
-    button.grid(row=1, column=1)
+    button.grid(row=1, column=1,pady=4,padx=100)
 
-    # Make a scroll bar so we can follow the text if it goes off a single box
-    scrollbar = Scrollbar(root, orient=VERTICAL)
-    # This puts the scrollbar on the right handside
-    scrollbar.grid(row=2, column=3, sticky=N+S+E)
+    img1 = ImageTk.PhotoImage(Image.open("./a.jpg").resize((800,600)))
+    label1 = Label(root, image = img1 )
+    label1.grid(row=2,column=1)
 
-    # Make a text box to hold the text
-    textbox = Text(root,font=("Helvetica",8),state=DISABLED, yscrollcommand=scrollbar.set, wrap=WORD)
-    # This puts the text box on the left hand side
-    textbox.grid(row=2, column=0, columnspan=3, sticky=N+S+W+E)
-
-    label = Label(root, text = "Hello World!")
-    label.grid(row=5,column=0)
-
-    # Configure the scroll bar to stroll with the text box!
-    scrollbar.config(command=textbox.yview)
-
-    #Set up the redirect
-    stdre = Redir(textbox)
-    # Redirect stdout, stdout is where the standard messages are ouput
-    sys.stdout = stdre
-    # Redirect stderr, stderr is where the errors are printed too!
-    sys.stderr = stdre
-    # Print hello so we can see the redirect is working!
-    print ("Select an Image")
-    # Start the application mainloop
+    label = Label(root, text = "")
+    label.grid(row=3,column=1)
 
     root.mainloop()
